@@ -1,43 +1,39 @@
 import streamlit as st
 import random
-from Evento import Evento
-from Gestores_de_eventos.Boleteria import Boleteria
+from Eventos.evento import Evento
+
 
 class Teatro(Evento):
     def __init__(self):
+
         super().__init__()
  
         
-    def set_data(self, typeOfTicket, price, capacity, status, artist, eventName, eventDate, openingTime, startTime, eventLocation, address, city, occupiedSlots, ticketsSold, event_id):
-        self.type_of_ticket = typeOfTicket
+    def set_data(self, type_of_ticket, price, capacity, status, artist, event_name, event_date, opening_time, start_time, event_location, address, city, occupied_slots, tickets_sold, event_id):
+        
+        self.type_of_ticket = type_of_ticket
         self.price = price
         self.max_capacity = capacity
         self.event_status = status
         self.artist = artist
-        self.event_name = eventName
-        self.event_date = eventDate
-        self.opening_time = openingTime
-        self.start_time = startTime
-        self.event_location = eventLocation
+        self.event_name = event_name
+        self.event_date = event_date
+        self.opening_time = opening_time
+        self.start_time = start_time
+        self.event_location = event_location
         self.address = address
         self.city = city
-        self.occupied_slots = occupiedSlots
-        self.tickets_sold = ticketsSold
+        self.occupied_slots = occupied_slots
+        self.tickets_sold = tickets_sold
         self.event_id = event_id
+        
+        return self
     
 
-    def get_occupied_slots(self, id): #Obtiene los slots ocupados
-        if id in self._events:
-            return self._events[id].occupied_slots
+    
         
-
-
-    def assign_slot_to_client(self, id): #Asigna un slot a un cliente
-        if id in self._events:
-            self._events[id].occupied_slots += 1
-
     def show_state(self): #Estado del evento
-        return self.status
+        return self.event_status
 
     def artist_name(self): #Nombre del artista
         return self.artist
@@ -73,35 +69,75 @@ class Teatro(Evento):
         return self.price
 
     def event_capacity(self): #Capacidad del evento
-        return self.capacity
+        return self.max_capacity
 
-    def show_slots(self, show_id): #Cantidad de slots disponibles
-        if show_id in self._events:
-            return self._events[show_id].capacity - self._events[show_id].occupied_slots
+    def show_slots(self): #Cantidad de slots disponibles
+        avaible_slots = self.event_capacity() - self.get_occupied_slots()
+        return avaible_slots
+    
+    def get_occupied_slots(self): #Obtiene los slots ocupados
+        return self.occupied_slots
         
 
-    def show_tickets_sold(self, flag): #Muestra la cantidad de tickets vendidos
-        if flag:
-            self.tickets_sold += 1
+    def show_tickets_sold(self): #Muestra la cantidad de tickets vendidos
         return self.tickets_sold
+    
+    def add_ticket_sold(self): #Agrega un ticket vendido
+        self.tickets_sold += 1
+        
 
-   
 
-    def total_commision(self, show_id): #Calcula la comision del evento para obtener las ganancias
-        if show_id in self._events:
-            return self._events[show_id].price * 0.93
+    def total_commision(self, show_id):
+        commision = self.event_price() * 0.93
+        return commision
+        
+    
+    def assign_slot_to_client(self):
+        
+        if self.get_occupied_slots() < self.event_capacity():
+            self.occupied_slots += 1
+        
+        
      
     
     def number_to_id(self): #Id aleatorio para identificar un evento
         number = str(random.randint(0, 10000))
         return number
 
-    def print_details(self): #Funcion temporarl para probar si se gaurdan los eventos
-        st.write(f"ID del evento: {self.show_event_id()}")
-        st.write(f"Nombre del evento: {self.show_name()}")
-        st.write(f"Fecha del evento: {self.show_date()}")
-        st.write(f"Hora de apertura: {self.show_aperture()}")
-        
         
 
-   
+    """
+        def add_ticket_sold(self, show_id): #Agrega un ticket vendido
+        stop = False
+        list_events = self.gestor_eventos.get_events()
+        for event in list_events:
+            if not stop and isinstance(event, Teatro):
+                if event.show_event_id() == show_id:
+                    event.tickets_sold += 1
+                    stop = True
+                    
+                    
+        def total_commision(self, show_id):
+        stop = False
+        list_events = self.gestor_eventos.get_events()
+        comission = None
+        for event in list_events:
+            if not stop and isinstance(event, Teatro):
+                if event.show_event_id() == self.event_id:
+                    comission = event.event_price() * 0.93
+                    stop = True
+        return comission
+        
+        
+        
+        def assign_slot_to_client(self, id):
+        stop = False
+        list_events = self.gestor_eventos.get_events()
+        
+        for event in list_events:
+            if not stop and isinstance(event, Teatro):
+                if event.show_event_id() == id:
+                    if event.get_occupied_slots() < event.event_capacity():
+                        event.occupied_slots += 1
+                        stop = True
+    """

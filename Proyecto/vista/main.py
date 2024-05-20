@@ -12,7 +12,7 @@ def main():
 
     if 'show_login' not in st.session_state:
         st.session_state['show_login'] = False
-    st.image("./imagenes_decorativas/fondo_usuario.jpg")  # Reemplaza "ruta_a_tu_imagen.jpg" con la ruta a tu imagen
+    st.image("./imagenes_decorativas/fondo_usuario.jpg")  
 
     st.markdown("# Bienvenido a Thunder events")
 

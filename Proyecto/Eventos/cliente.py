@@ -1,6 +1,9 @@
+import streamlit as st
 
 class Cliente:
-    def __init__(self, user, id, city, address, payment, email, number, money):
+    def __init__(self, user, id, city, address, payment, email, number, money, event):
+        if "clients" not in st.session_state:
+            st.session_state["clients"] = []
         self.user_name = user
         self.user_id = id
         self.city = city
@@ -9,14 +12,18 @@ class Cliente:
         self.user_email = email
         self.phone_number = number
         self.user_money = money
-        self.event = ""
-
+        self.event = event
+        self.save_to_session_state()
+        
+    def save_to_session_state(self):
+        st.session_state["clients"].append(self)
+        
     def get_user_name(self):
         return self.user_name
 
     # Obtiene el ID de usuario del cliente
     def get_user_id(self):
-        return self.user_name
+        return self.user_id
 
     # Obtiene la ciudad del cliente
     def get_city(self):
@@ -41,3 +48,4 @@ class Cliente:
     # Obtiene el dinero del cliente
     def get_user_money(self):
         return self.user_money
+    

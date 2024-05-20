@@ -1,7 +1,9 @@
 import streamlit as st
+#Para crear unas nuevas páginas se usa con re_run, debo revisar la nueva versión de pix_match
+#Con rerun, se debe guardar en una sesion, porque si no se borra.
 
+from Gestores_de_eventos.controlador import Controlador
 
-from Gestores_de_eventos.Controlador import Controlador
 
 
 class Interfaz:
@@ -9,7 +11,7 @@ class Interfaz:
         # Crea un estado de sesión
         if 'user_type' not in st.session_state:
             st.session_state['user_type'] = None
-        self.controlador = Controlador()
+        self.controlador = Controlador() #Guardar en un sesion state un controlador
         
 
     def interfaz_funcion(self):
@@ -36,7 +38,7 @@ class Interfaz:
             st.write('Bienvenido Usuario')
             activity = st.selectbox("¿Qué quieres hacer?", ["Registrarse a un evento", "Ver mi información"], key = "jkabawdbjawjnawd")
             if activity == "Registrarse a un evento":
-                event_type = st.selectbox("Selecciona el tipo de evento", ["Teatro", "Bar", "Filantropico"], key="bawdbhawawuhawuduwiaw")
+                self.controlador.register_user_to_event()
                 # Aquí puedes agregar el código para manejar el registro del usuario al evento seleccionado
             elif activity == "Ver mi información":
                 pass
@@ -51,19 +53,21 @@ class Interfaz:
             else:
                 st.write('Contraseña incorrecta.')
 
-    def admin_actions(self):
-        action = st.selectbox("¿Qué acción quieres realizar?", ["Crear un evento", "Eliminar un evento", "Ver estadísticas"],key="admin_action")
+    def admin_actions(self): # Cambiar por un nombre diferente como "draw"
+        action = st.selectbox("¿Qué acción quieres realizar?", ["Crear un evento", "Eliminar un evento", "Ver estadísticas", "Generar boleta"],key="admin_action")
         if action == "Crear un evento":
             event_type = st.selectbox("¿Qué tipo de evento quieres crear?", ["Teatro", "Bar", "Filantropico"], key="event_type")
             if event_type == "Teatro":
-                self.controlador.theater()
+                self.controlador.create_event_theater() #Cambiar el nombre por uno más especifico
             elif event_type == "Bar":
-                self.controlador.bar()
+                self.controlador.create_event_bar()
             elif event_type == "Filantropico":
-                self.controlador.filantropic()
+                self.controlador.create_event_filantropic()
         elif action == "Eliminar un evento":
-        
-            pass
+            self.controlador.delete_event()
+            
         elif action == "Ver estadísticas":
             
             pass
+        elif action == "Generar boleta":
+            self.controlador.generate_ticket()

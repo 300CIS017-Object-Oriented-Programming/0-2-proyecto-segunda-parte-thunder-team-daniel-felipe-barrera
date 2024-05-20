@@ -1,5 +1,5 @@
 import unittest
-from Eventos.Bar import Bar
+from Eventos.bar import Bar
 
 
 class TestBar(unittest.TestCase):

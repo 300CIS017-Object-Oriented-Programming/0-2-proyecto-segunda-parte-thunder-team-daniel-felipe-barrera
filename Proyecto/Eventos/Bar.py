@@ -1,7 +1,8 @@
 
-from Evento import Evento
-from Gestores_de_eventos import Boleteria
+from Eventos.evento import Evento
+
 import random
+
 
 
 class Bar(Evento):
@@ -11,6 +12,7 @@ class Bar(Evento):
 
     # Event data configuration functions
     def set_data(self, type_of_ticket, price, capacity, status, artist, event_name, event_date, opening_time, start_time, event_location, address, city, occupied_slots, tickets_sold, event_id):
+        
         self.type_of_ticket = type_of_ticket
         self.price = price
         self.max_capacity = capacity
@@ -26,9 +28,8 @@ class Bar(Evento):
         self.occupied_slots = occupied_slots
         self.tickets_sold = tickets_sold
         self.event_id = event_id
-
-    def set_bar_id(self):
-        self._bar_id = str(self._generate_bar_random_number())
+        
+        return self
 
 
     # Functions to get event information
@@ -79,23 +80,40 @@ class Bar(Evento):
         return random.randint(0, 10000)
 
     def show_tickets_sold(self, flag):
-        if flag:
-            self.tickets_sold += 1
-        return self.tickets_sold
-
-    def show_slots(self, show_id):
-        if show_id in self._bar_events:
-            return self._bar_events[show_id].max_capacity - self._bar_events[show_id].occupied_slots
         
+        return self.tickets_sold #TODO agregar el ticket desde la boleteria
+    
+    def add_ticket_sold(self):
+        self.tickets_sold += 1
+        
+    
+
+    def show_slots(self):
+        return self.occupied_slots
 
     def assign_slot_to_client(self, id):
-        if id in self._bar_events and self._bar_events[id].occupied_slots < self._bar_events[id].max_capacity:
-            self._bar_events[id].occupied_slots += 1
+        stop = False
+        list_events = self.gestor_eventos.get_events()
+        
+        for event in list_events:
+            if not stop and isinstance(event, Bar):
+                if event.show_event_id() == id:
+                    if event.get_occupied_slots() < event.event_capacity():
+                        event.occupied_slots += 1
+                        stop = True
+     
 
     # Profit calculation and management functions
     def total_commision(self, show_id):
-        if show_id in self._bar_events:
-            return self._bar_events[show_id].price * 0.2
+        stop = False
+        list_events = self.gestor_eventos.get_events()
+        comission = None
+        for event in list_events:
+            if not stop and isinstance(event, Bar):
+                if event.show_event_id() == self.event_id:
+                    comission = event.event_price() * 0.8
+                    stop = True
+        return comission
        
 
     def get_occupied_slots(self, id):

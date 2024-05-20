@@ -1,22 +1,29 @@
 import streamlit as st
+import random
+from Eventos.teatro import Teatro
+from Eventos.bar import Bar
+from Eventos.filantropico import Filantropico
+from Gestores_de_eventos.gestor_eventos import Gestor_Eventos
+from Eventos.cliente import Cliente
+from Gestores_de_eventos.boleteria import Boleteria
 
-from Eventos.Teatro import Teatro
-from Eventos.Bar import Bar
-from Eventos.Filantropico import Filantropico
-from Gestores_de_eventos.Gestor_Eventos import Gestor_Eventos
+#En este archivo se piden todos los datos necesarios, se llaman a las funciones, entre otros.
+
 
 class Controlador:
     def __init__(self):
+        
 
-        self.gestor_eventos = Gestor_Eventos()
-        self.teatro = Teatro()
-        self.barr = Bar()
-        self.filantropico = Filantropico()
+        self.gestor_eventos = Gestor_Eventos() #Objeto de la clase Gestor_Eventos
+        self.teatro = Teatro() # objeto de la clase Teatro
+        self.bar = Bar() # objeto de la clase Bar
+        self.filantropico = Filantropico() # objeto de la clase Filantropico
+        self.boleteria = Boleteria() # objeto de la clase Boleteria
         
         
-    def theater(self):
+    def create_event_theater(self):
         controlador = Controlador()
-    
+        
         st.title("Welcome administrator, please input the next values")
         ticket_option = st.selectbox("The ticket is", options=[1, 2], format_func=lambda x: "Regular" if x == 1 else "Presale", key="ticket_option")
         type_of_ticket = "Regular" if ticket_option == 1 else "Presale"
@@ -36,16 +43,16 @@ class Controlador:
         
         if st.button("Create event", key = "dauwyduawd"):
             if all([type_of_ticket, event_price, aforo, event_status, artist, event_name, event_date, opening_time, start_time, event_location, address, city]):
-                self.teatro.set_data(type_of_ticket, event_price, aforo, event_status, artist, event_name, event_date, opening_time, start_time, event_location, address, city, 0, 0, event_id)
+                object_theater = self.teatro.set_data(type_of_ticket, event_price, aforo, event_status, artist, event_name, event_date, opening_time, start_time, event_location, address, city, 0, 0, event_id)
                 # Guardar los datos en la sesión
-                controlador.gestor_eventos.add_event(self.teatro)
-                self.teatro.print_details()
+                controlador.gestor_eventos.add_event(object_theater)
+                
                 st.success("The event was succesfully created")
             else:
                 st.error("Fill all the blank camps")
         
 
-    def bar(self):
+    def create_event_bar(self):
         controlador = Controlador()
         
         st.title("Welcome administrator, please input the next values")
@@ -64,13 +71,13 @@ class Controlador:
         event_location = st.text_input("Event location", key = "kldjhwvqd")
         address = st.text_input("Address", key = "ioiruf3ygq2eow")
         city = st.text_input("City", key = "jlkadhcawvdi")
-        event_id = self.barr.number_to_id()
+        event_id = self.bar.number_to_id()
         
         if st.button("Create event", key = "jkdhbwf"):
             if all([type_of_ticket, event_price, aforo, event_status, artist, event_name, event_date, opening_time, start_time, event_location, address, city]):
-                self.barr.set_data(type_of_ticket, event_price, aforo, event_status, artist, event_name, event_date, opening_time, start_time, event_location, address, city, 0, 0, event_id)
+                object_bar = self.bar.set_data(type_of_ticket, event_price, aforo, event_status, artist, event_name, event_date, opening_time, start_time, event_location, address, city, 0, 0, event_id)
                 # Guardar los datos en la sesión
-                controlador.gestor_eventos.add_event(self.barr)
+                controlador.gestor_eventos.add_event(object_bar)
                 
                 st.success("El evento fue creado exitosamente!!")
                 
@@ -79,9 +86,9 @@ class Controlador:
                 st.error("Por favor complete todos los campos")
         
 
-    def filantropic(self):
+    def create_event_filantropic(self):
         controlador = Controlador()
-        
+        type_of_event = "Filantropico"
         st.title("Welcome administrator, please input the next values")
         ticket_option = st.selectbox("The ticket is", options=[1, 2], format_func=lambda x: "Regular" if x == 1 else "Presale", key = "jwhduvadhw")
         type_of_ticket = "Regular" if ticket_option == 1 else "Presale"
@@ -101,11 +108,96 @@ class Controlador:
         
         if st.button("Create event", key = "dawjdhgawdva"):
             if all([type_of_ticket, event_price, aforo, event_status, artist, event_name, event_date, opening_time, start_time, event_location, address, city]):
-                self.filantropico.set_data(type_of_ticket, event_price, aforo, event_status, artist, event_name, event_date, opening_time, start_time, event_location, address, city, 0, 0, event_id)
+                filantropic = self.filantropico.set_data(type_of_ticket, event_price, aforo, event_status, artist, event_name, event_date, opening_time, start_time, event_location, address, city, 0, 0, event_id)
                 # Guardar los datos en la sesión
-                controlador.gestor_eventos.add_event(self.filantropico)
+                controlador.gestor_eventos.add_event(filantropic)
                 
-                st.success("El evento fue creado exitosamente!!")
+                st.success("The event was succesfully created")
             else:
-                st.error("Por favor complete todos los campos")
+                st.error("Please complete the blank camps")
+        
+
+    
+    def register_user_to_event(self):
+        no_more_slots = False
+        controller = Controlador()
+        user_id = str(random.randint(0, 10000))
+      
+        
+        st.title("Welcome user, please select the type of event you want to attend or mark attend to the event you want to attend")
+        selected_event_type = st.selectbox("Select event type", options=["Teatro", "Bar", "Filantropico", "Register attendance"], key="event_type")
+        if(selected_event_type == "Register attendance"):
+            self.register_attend()
+        else:
+            
+            ticket_type = st.selectbox("Select ticket type", options=["Presale", "Regular"], key="ticket_type")
+            
+            controller.gestor_eventos.show_event(selected_event_type)
+                
+            st.title("Welcome user, please input the next values")
+            name = st.text_input("Name", key = "name")
+            email = st.text_input("Email", key = "email")
+            phone = st.text_input("Phone", key = "phone")
+            address = st.text_input("Address", key = "address")
+            city = st.text_input("City", key = "city")
+            payment = st.text_input("Payment method", key = "payment")
+            money = st.number_input("Money", key = "money")
+            event_id = st.text_input("Write the ID of the event you want to enter", key = "awdwdawd")
+                
+            if st.button("Register", key = "register"):
+                event = controller.gestor_eventos.find_event(event_id)
+                if(event.get_occupied_slots() == event.event_capacity()):
+                    st.error("Sorry, there's no more slots available for this event")
+                    no_more_slots = True
+                    
+                elif (money < event.event_price()):
+                    st.error("You don't have enough money to attend this event")
+                        
+                elif all([name, email, phone, address, city, payment, money, event_id]) and not no_more_slots:
+                    st.success("The user was succesfully registered")
+                    st.write(f"This is your ID, don't forget it!! {user_id}")
+                    client = Cliente(name, user_id, city, address, payment, email, phone, money, selected_event_type)
+                    controller.boleteria.add_client(client)
+                    controller.boleteria.add_ticket(name, user_id, selected_event_type, event_id, ticket_type, payment)
+                    event.add_ticket_sold()
+                    event.assign_slot_to_client()
+                        
+                        
+                        
+                else:
+                    st.error("Fill all the blank camps")
+                    
+    def register_attend(self):
+        controller = Controlador()
+        
+        st.write("Welcome user, please input the next values to register your attendance") 
+        event_id = st.text_input("Write the ID of the event you want to attend", key = "event_id")
+        if (st.button("Register attendance", key = "register")):
+            register = controller.boleteria.register_attendance(event_id)
+            if not register:
+                st.error("The event was not found or you're not in the list")
+            else:
+                st.success("You were succesfully registered")
+        
+            
+    
+                    
+    def delete_event(self):
+        controller = Controlador()
+        st.title("Welcome administrator, please select the type of event you want to delete")
+        selected_event_type = st.selectbox("Select event type", options=["-- Select a event --", "Teatro", "Bar", "Filantropico"], key="event_type")
+        event_id = st.text_input("Write the ID of the event you want to delete", key = "event_id")
+        
+        if st.button("Delete event", key = "delete"):
+            controller.gestor_eventos.delete_a_event(event_id)
+            st.success("The event was succesfully deleted")
+            
+    def generate_ticket(self):
+        controller = Controlador()
+        st.title("Welcome admin, please input the next values to generate your ticket")
+        client_id = st.text_input("Write the ID of the client", key = "client_id")
+        if st.button("Generate ticket", key = "generate"):
+            controller.boleteria.create_pdf(client_id)
+            st.success("The ticket was succesfully generated")
+        
         

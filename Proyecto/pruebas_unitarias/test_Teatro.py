@@ -1,6 +1,6 @@
 import unittest
-from Eventos.Teatro import Teatro
-from Evento import Evento
+from Eventos.teatro import Teatro
+from Eventos.evento import Evento
 
 class TestTeatro(unittest.TestCase):
     def setUp(self):

@@ -1,6 +1,6 @@
 import unittest
-from Eventos.Filantropico import Filantropico
-from Evento import Evento
+from Eventos.filantropico import Filantropico
+from Eventos.evento import Evento
 
 class TestFilantropico(unittest.TestCase):
     def setUp(self):
