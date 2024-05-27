@@ -28,6 +28,7 @@ class Bar(Evento):
         self.occupied_slots = occupied_slots
         self.tickets_sold = tickets_sold
         self.event_id = event_id
+        self.proffit = 0.0
         
         return self
 
@@ -36,91 +37,82 @@ class Bar(Evento):
     def get_bar_id(self):
         return self._bar_id
 
-    def show_state(self):
+    def show_state(self): #Muestra el estado del evento
         return self.event_status
 
-    def artist_name(self):
+    def artist_name(self): #Muestra el nombre del artista
         return self.artist
 
-    def show_name(self):
+    def show_name(self): #Muestra el nombre del evento
         return self.event_name
 
-    def show_date(self):
+    def show_date(self): #Muestra la fecha del evento
         return self.event_date
 
-    def show_aperture(self):
+    def show_aperture(self): #Muestra la hora de apertura
         return self.opening_time
 
-    def show_time(self):
+    def show_time(self): #Muestra la hora de inicio
         return self.start_time
 
-    def show_location(self):
+    def show_location(self): #Muestra la ubicación del evento
         return self.event_location
 
-    def show_address(self):
+    def show_address(self): #Muestra la dirección del evento
         return self.address
 
-    def show_city(self):
+    def show_city(self): #Muestra la ciudad del evento
         return self.city
 
-    def show_type_of_ticket(self):
-        return self.type_of_ticket
+    def show_type_of_ticket(self): #Muestra el tipo de ticket
+        return self.type_of_ticket 
 
-    def show_event_id(self):
+    def show_event_id(self): #Muestra el id del evento
         return self.event_id
 
-    def event_price(self):
+    def event_price(self): #Muestra el precio del evento
         return self.price
 
-    def event_capacity(self):
+    def event_capacity(self): #Muestra la capacidad del evento
         return self.max_capacity
-    
-    # Utility functions
-    def random_number(self):
-        return random.randint(0, 10000)
 
-    def show_tickets_sold(self, flag):
+    def show_tickets_sold(self): #Muestra los tickets vendidos
         
-        return self.tickets_sold #TODO agregar el ticket desde la boleteria
+        return self.tickets_sold 
     
-    def add_ticket_sold(self):
+    def add_ticket_sold(self): #Añade un ticket vendido
         self.tickets_sold += 1
         
     
+    def show_slots(self): #Muestra los slots ocupados
+        avaible_slots = self.event_capacity() - self.get_occupied_slots()
+        return avaible_slots
+    
+    
+    def get_proffit(self): #Obtiene el proffit
+        return self.proffit
 
-    def show_slots(self):
+    def get_occupied_slots(self): #Obtiene los slots ocupados
         return self.occupied_slots
-
-    def assign_slot_to_client(self, id):
-        stop = False
-        list_events = self.gestor_eventos.get_events()
+    
+    def add_ticket_sold(self): #Agrega un ticket vendido
+        self.tickets_sold += 1
+    
+    def assign_slot_to_client(self): #Asigna un slot a un cliente
         
-        for event in list_events:
-            if not stop and isinstance(event, Bar):
-                if event.show_event_id() == id:
-                    if event.get_occupied_slots() < event.event_capacity():
-                        event.occupied_slots += 1
-                        stop = True
-     
+        if self.get_occupied_slots() < self.event_capacity():
+            self.occupied_slots += 1
+            
+    def add_proffit(self): #Añade el proffit
+        self.proffit += self.total_commision()
 
-    # Profit calculation and management functions
-    def total_commision(self, show_id):
-        stop = False
-        list_events = self.gestor_eventos.get_events()
-        comission = None
-        for event in list_events:
-            if not stop and isinstance(event, Bar):
-                if event.show_event_id() == self.event_id:
-                    comission = event.event_price() * 0.8
-                    stop = True
-        return comission
-       
-
-    def get_occupied_slots(self, id):
-        if id in self._bar_events:
-            return self._bar_events[id].occupied_slots
+    
+    def total_commision(self): #Calcula la comisión total
+        commision = self.event_price() * 0.8
+        return commision
         
     
     def number_to_id(self):
         number = str(random.randint(0, 10000))
         return number
+    

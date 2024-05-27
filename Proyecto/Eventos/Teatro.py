@@ -5,8 +5,9 @@ from Eventos.evento import Evento
 
 class Teatro(Evento):
     def __init__(self):
-
+        
         super().__init__()
+        
  
         
     def set_data(self, type_of_ticket, price, capacity, status, artist, event_name, event_date, opening_time, start_time, event_location, address, city, occupied_slots, tickets_sold, event_id):
@@ -26,12 +27,11 @@ class Teatro(Evento):
         self.occupied_slots = occupied_slots
         self.tickets_sold = tickets_sold
         self.event_id = event_id
+        self.proffit = 0.0
         
         return self
     
 
-    
-        
     def show_state(self): #Estado del evento
         return self.event_status
 
@@ -82,62 +82,28 @@ class Teatro(Evento):
     def show_tickets_sold(self): #Muestra la cantidad de tickets vendidos
         return self.tickets_sold
     
+    
+    def get_proffit(self):
+        return self.proffit
+    
     def add_ticket_sold(self): #Agrega un ticket vendido
         self.tickets_sold += 1
         
 
-
-    def total_commision(self, show_id):
+    def total_commision(self):
         commision = self.event_price() * 0.93
         return commision
+    
+    def add_proffit(self):
+        self.proffit += self.total_commision()
         
     
-    def assign_slot_to_client(self):
+    def assign_slot_to_client(self): #Asigna un slot a un cliente
         
         if self.get_occupied_slots() < self.event_capacity():
             self.occupied_slots += 1
         
-        
-     
     
     def number_to_id(self): #Id aleatorio para identificar un evento
         number = str(random.randint(0, 10000))
         return number
-
-        
-
-    """
-        def add_ticket_sold(self, show_id): #Agrega un ticket vendido
-        stop = False
-        list_events = self.gestor_eventos.get_events()
-        for event in list_events:
-            if not stop and isinstance(event, Teatro):
-                if event.show_event_id() == show_id:
-                    event.tickets_sold += 1
-                    stop = True
-                    
-                    
-        def total_commision(self, show_id):
-        stop = False
-        list_events = self.gestor_eventos.get_events()
-        comission = None
-        for event in list_events:
-            if not stop and isinstance(event, Teatro):
-                if event.show_event_id() == self.event_id:
-                    comission = event.event_price() * 0.93
-                    stop = True
-        return comission
-        
-        
-        
-        def assign_slot_to_client(self, id):
-        stop = False
-        list_events = self.gestor_eventos.get_events()
-        
-        for event in list_events:
-            if not stop and isinstance(event, Teatro):
-                if event.show_event_id() == id:
-                    if event.get_occupied_slots() < event.event_capacity():
-                        event.occupied_slots += 1
-                        stop = True
-    """

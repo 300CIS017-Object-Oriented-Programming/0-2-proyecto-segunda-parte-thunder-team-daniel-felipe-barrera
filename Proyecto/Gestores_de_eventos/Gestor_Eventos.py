@@ -3,8 +3,6 @@ from Eventos.teatro import Teatro
 from Eventos.bar import Bar
 from Eventos.filantropico import Filantropico  
 
-#Ajustes, que no todo quede en session_states, los nombres de los archivos con minusculas
-#Cambiar los nombres de la funciones para que sean más descriptivos
 
 class Gestor_Eventos:
     def __init__(self):
@@ -20,26 +18,30 @@ class Gestor_Eventos:
         self.filantropico = Filantropico()
         
         
-    def add_event(self, event):
+    def add_event(self, event): #Añade un evento a la lista de eventos
         self.events.append(event)
         st.session_state['events'] = self.events
     
-    def add_event_stats(self, event_id, event_stats):
-        self.events_stats[event_id] = event_stats
+    def add_event_stats(self, payment_method, ticket_type, proffit): #Añade las estadísticas de los eventos
+        """
+        Como toda esta información se guarda en un diccionario de diccionarios, se verifica si el método de pago ya está en el diccionario
+        si no está entonces lo agrega como primera clave y como valor otro diccionario, que contendra de clave el tipo de ticket
+        y como valor las ganancias de ese tipo de ticket.
+        
+        Si el metodo de pago ya está en el diccionario, entonces se verifica si el tipo de ticket ya está en el diccionario
+        si no está entonces lo agrega como clave y como valor las ganancias de ese tipo de ticket.
+        y si ya está, entonces simplemente actualiza las ganancias de ese tipo de ticket.
+        
+        """
+        if payment_method not in self.events_stats: 
+            self.events_stats[payment_method] = {ticket_type: proffit}
+        else:
+            if ticket_type not in self.events_stats[payment_method]:
+                self.events_stats[payment_method][ticket_type] = proffit
+            else:
+                self.events_stats[payment_method][ticket_type] += proffit   
+        
         st.session_state['events_stats'] = self.events_stats
-
-    def show_all_artist_tickets_sold(self, artist): #TODO
-        found = False
-        for event in st.session_state['events']:
-            if event.artist_name() == artist:
-                st.write(f"Artist name: {artist}\nEvent name: {event.show_name()}\nDate: {event.show_date()}\nAddress: {event.show_addres()}\nRemaining slots: {event.show_slots()} of {event.event_capacity()}\n")
-                found = True
-        if not found:
-            st.write("The specified artist doesn't exist in any event")
-
-    def show_payment_methods(self): #TODO
-        for event_id, stats in st.session_state['events_stats'].items():
-            st.write(f"Event ID: {event_id}\nType of payment: {stats['payment_type']}\nProfit: {stats['profit']}\n")
 
 
     def delete_a_event(self, event_ID): #Hecho
@@ -67,17 +69,19 @@ class Gestor_Eventos:
                             if session_event.show_event_id() == event_ID:
                                 del st.session_state['events'][j]
                                 stop_list = True
+                                st.success("Event deleted")
                     found = True
-    
+                    
+    #Cambiar a otra parte, porque no va aquí
     def show_event(self, selected_event): #Hecho
         
         event_found = False
         for event in self.events:
  
-            if selected_event == "Teatro" and isinstance(event, Teatro):
-                
+            if selected_event == "Teatro" and isinstance(event, Teatro): #Comprueba si el evento es de tipo teatro
+                event_found = True
                 st.write("Type of event: Teatro")
-                st.write(f"Artist: {event.artist_name()}")
+                st.write(f"Artist: {event.artist_name()}") #Funciones para obtener los atributos de la instancia
                 st.write(f"Event id: {event.show_event_id()}")  # Aquí estás accediendo a los atributos de la instancia
                 st.write(f"Event name: {event.show_name()}")
                 st.write(f"Event price: {event.event_price()}")
@@ -87,6 +91,7 @@ class Gestor_Eventos:
                 st.write(f"Event city: {event.show_city()}")
                 st.write(f"Event status: {event.show_state()}")
                 st.write(f"Avaible slots: {event.show_slots()}")
+                
                 
                     
             elif selected_event == "Bar" and isinstance(event, Bar):
@@ -118,22 +123,28 @@ class Gestor_Eventos:
                     st.write(f"Event status: {event.show_state()}")
                     st.write(f"Artist: {event.artist_name()}")
                     st.write(f"Avaible slots: {event.show_slots()}")
-        if not event_found:
-            st.write("Event not found")  
+        if not event_found: #Si no encuentra el evento le manda un mensaje de error
+            st.error("Event not found")  
+            
                     
     def find_event(self, event_id): #Hecho
         found_event = None
+        founded = False
         
         for event in self.events:
+            #Como busca en toda la lista de los eventos, entonces comprueba si el evento "event" pertenece a alguna de esas clases de objetos
+            #Si es así, entoncs guarda ese evento en una variable y la retorna, para su uso posterior
             if isinstance(event, (Teatro, Bar, Filantropico)) and event.show_event_id() == event_id:
                 found_event = event
-            else:
-                st.error("Sorry, the event was not found")  
+                founded = True
+        if not founded:
+            st.error("Sorry, the event was not found")  
+            
         return found_event   
             
-    def get_events(self):
+    def get_events(self): #Obtiene toda la lista de los eventos
         return self.events
     
-    def get_events_stats(self):
+    def get_events_stats(self): #Obtiene las estadísticas de los eventos
         return self.events_stats
     

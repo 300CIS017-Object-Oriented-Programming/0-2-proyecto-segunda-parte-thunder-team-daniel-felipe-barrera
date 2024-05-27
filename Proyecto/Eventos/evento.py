@@ -19,75 +19,84 @@ class Evento(ABC):
         self.max_capacity = 0           # Capacidad máxima
         self.tickets_sold = 0           # Número de tickets vendidos
         self.comission = 0.0           # Comisión por venta
+        self.proffit = 0.0             # Ganancia total
 
     @abstractmethod
     def set_data(self, type_of_ticket, price, aforo, status, artist, event_name, event_date, opening_time, start_time, event_location, address, city, occupied_slots, tickets_sold, event_id):
         pass
+    #Sirve para asignar los valores a los atributos de la clase
 
     @abstractmethod
-    def show_state(self):
+    def show_state(self): #Obtiene el estado del evento
         pass
 
     @abstractmethod
-    def artist_name(self):
+    def artist_name(self): #Obtiene el nombre del artista
         pass
 
     @abstractmethod
-    def show_name(self):
+    def show_name(self): #Obtiene el nombre del evento
         pass
 
     @abstractmethod
-    def show_date(self):
+    def show_date(self): #Obtiene la fecha del evento
         pass
 
     @abstractmethod
-    def show_aperture(self):
+    def show_aperture(self): #Obtiene la hora de apertura
+        pass 
+
+    @abstractmethod
+    def show_time(self): #Obtiene la hora de inicio
         pass
 
     @abstractmethod
-    def show_time(self):
+    def show_location(self): #Obtiene el lugar del evento
         pass
 
     @abstractmethod
-    def show_location(self):
+    def show_address(self): #Obtiene la dirección del evento
         pass
 
     @abstractmethod
-    def show_address(self):
+    def show_city(self): #Obtiene la ciudad del evento
         pass
 
     @abstractmethod
-    def show_city(self):
+    def show_type_of_ticket(self): #Obtiene el tipo de ticket
         pass
 
     @abstractmethod
-    def show_type_of_ticket(self):
+    def show_event_id(self): #Obtiene el ID del evento
         pass
 
     @abstractmethod
-    def show_event_id(self):
+    def event_price(self): #Obtiene el precio del evento
         pass
 
     @abstractmethod
-    def event_price(self):
+    def event_capacity(self): #Obtiene la capacidad del evento
         pass
 
     @abstractmethod
-    def event_capacity(self):
+    def show_slots(self): #Obtiene los espacios ocupados
         pass
 
     @abstractmethod
-    def show_slots(self):
+    def show_tickets_sold(self): #Obtiene el número de tickets vendidos
         pass
 
     @abstractmethod
-    def show_tickets_sold(self):
-        pass
-
-    @abstractmethod
-    def total_commision(self, show_id):
+    def total_commision(self): #Obtiene la comisión total
         pass
     
     @abstractmethod
-    def number_to_id(self):
+    def add_proffit(self): #Añade la ganancia total
+        pass
+    
+    def get_proffit(self): #Obtiene la ganancia total
+        pass   
+    
+    @abstractmethod
+    def number_to_id(self): #Convierte un número aleatorio en un ID
         pass

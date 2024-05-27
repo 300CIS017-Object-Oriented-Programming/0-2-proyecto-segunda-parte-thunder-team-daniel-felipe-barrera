@@ -26,6 +26,7 @@ class Filantropico(Evento):
         self.occupied_slots = occupied_slots
         self.tickets_sold = tickets_sold
         self.event_id = event_id
+        self.proffit = 0.0
         
         return self
     
@@ -81,32 +82,29 @@ class Filantropico(Evento):
         number = str(random.randint(0, 10000))
         return number
 
-    def show_slots(self, show_id): #Cantidad de slots disponibles
-        stop = False
-        list_events = self.gestor_eventos.get_events()
-        for event in list_events:
-            if not stop and isinstance(event, Filantropico):
-                if event.show_event_id() == show_id:
-                    slots = event.event_capacity() - event.get_occupied_slots()
-                    stop = True
-        return slots
+    def show_slots(self): #Cantidad de slots disponibles
+        avaible_slots = self.event_capacity() - self.get_occupied_slots()
+        return avaible_slots
+    
+    def add_proffit(self):
+        self.proffit += self.total_commision()
+    
+    def get_proffit(self):
+        return self.proffit
     
     
-    def assign_slot_to_client(self, id):
-        stop = False
-        list_events = self.gestor_eventos.get_events()
-        
-        for event in list_events:
-            if not stop and isinstance(event, Filantropico):
-                if event.show_event_id() == id:
-                    if event.get_occupied_slots() < event.event_capacity():
-                        event.occupied_slots += 1
-                        stop = True
+    def assign_slot_to_client(self):
+        if self.get_occupied_slots() < self.event_capacity():
+            self.occupied_slots += 1
+    
+    def add_ticket_sold(self): #Agrega un ticket vendido
+        self.tickets_sold += 1
             
 
 
-    def get_occupied_slots(self, id):
+    def get_occupied_slots(self):
         return self.occupied_slots
     
-    def total_commision(self, show_id):
-        return 0
+    def total_commision(self):
+        commission = self.price
+        return commission
